@@ -1,0 +1,80 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 1100px; margin: 40px auto; padding: 0 20px;">
+    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+
+        <div style="flex: 2; min-width: 300px;">
+            <h2 style="margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Review your order</h2>
+
+            <div style="background: white; padding: 25px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="font-size: 18px; margin-top: 0;">1. Shipping Address</h3>
+                <form method="POST" id="checkout-form">
+                    {% csrf_token %}
+                    <div class="checkout-form">
+                        {{ form.as_p }}
+                    </div>
+
+                    <hr style="margin: 20px 0;">
+
+                    <h3 style="font-size: 18px;">2. Payment Method</h3>
+                    <p style="font-size: 14px; color: #555; background: #f9f9f9; padding: 10px; border-radius: 4px; border: 1px dashed #ccc;">
+                        <strong>Simulation Mode:</strong> Cash on Delivery (COD) selected.
+                    </p>
+
+                    <button type="submit" class="btn-amazon btn-yellow" style="width: 100%; padding: 12px; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 10px;">
+                        Place your order
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div style="flex: 1; min-width: 300px;">
+            <div style="background: #f3f3f3; border: 1px solid #ddd; border-radius: 8px; padding: 20px; position: sticky; top: 100px;">
+                <button type="submit" form="checkout-form" class="btn-amazon btn-yellow" style="width: 100%; padding: 10px; font-weight: bold; border-radius: 8px; margin-bottom: 10px;">
+                    Place your order
+                </button>
+                <p style="font-size: 11px; color: #555; text-align: center; margin-bottom: 15px;">
+                    By placing your order, you agree to our conditions of use.
+                </p>
+
+                <hr style="border: 0; border-top: 1px solid #ddd;">
+
+                <h3 style="margin-top: 10px; font-size: 18px;">Order Summary</h3>
+
+                <div style="display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px;">
+                    <span>Items ({{ order.get_cart_count }}):</span>
+                    <span>${{ order.get_cart_total }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px;">
+                    <span>Shipping & handling:</span>
+                    <span style="color: #007600;">FREE</span>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+
+                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #B12704;">
+                    <span>Order Total:</span>
+                    <span>${{ order.get_cart_total }}</span>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <p style="font-size: 13px; font-weight: bold; color: #111; margin-bottom: 10px;">Review items:</p>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        {% for item in items %}
+                            <div style="display: flex; gap: 10px; margin-bottom: 12px; font-size: 12px;">
+                                <img src="{{ item.product.image.url }}" style="width: 50px; height: 50px; object-fit: contain; background: white; border: 1px solid #eee; border-radius: 4px;">
+                                <div style="flex-grow: 1;">
+                                    <div style="font-weight: bold; color: #007185; line-height: 1.2;">{{ item.product.name }}</div>
+                                    <div style="color: #555;">Qty: {{ item.quantity }}</div>
+                                    <div style="font-weight: bold; color: #B12704;">${{ item.product.price }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

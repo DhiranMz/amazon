@@ -1,0 +1,551 @@
+/* ==========================================================================
+   1. GLOBAL SETTINGS & RESET
+   ========================================================================== */
+* {
+    box-sizing: border-box; /* Crucial for preventing padding-based width issues */
+}
+
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #eaeded; /* Amazon light grey */
+    color: #0f1111;
+}
+
+/* ==========================================================================
+   2. MAIN LAYOUT (HOME PAGE)
+   ========================================================================== */
+.main-container {
+    display: flex;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 20px;
+    min-height: 600px;
+    align-items: flex-start; /* Required for sticky sidebar to work correctly */
+}
+
+/* ==========================================================================
+   3. STICKY SIDEBAR (This runs for ALL screen sizes by default)
+   ========================================================================== */
+.sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    padding-right: 20px;
+    border-right: 1px solid #ddd;
+
+    /* Sticky Logic - Fixes the PyCharm Error */
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+
+/* Hide scrollbar for a cleaner sidebar look */
+.sidebar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.sidebar h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #444;
+    font-size: 13px;
+    line-height: 2.2;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    color: #e47911; /* Amazon Orange */
+}
+
+/* ==========================================================================
+   4. PRODUCT GRID & CARDS
+   ========================================================================== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    flex-grow: 1;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.img-container {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.img-container img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .img-container img {
+    transform: scale(1.05); /* Subtle zoom effect */
+}
+
+.product-card h3 {
+    font-size: 16px;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+    color: #0f1111;
+}
+
+.stars {
+    color: #ffa41c;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #B12704;
+    margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   5. FORMS, INPUTS & BUTTONS
+   ========================================================================== */
+.add-form {
+    margin-top: auto; /* Pushes buttons to the bottom of the card */
+}
+
+.qty-select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f0f2f2;
+}
+
+.btn-amazon {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-add {
+    background: #ffd814;
+    border-color: #fcd200;
+    color: #111;
+}
+
+.btn-add:hover {
+    background: #f7ca00;
+}
+
+.btn-buy {
+    background: #ffa41c;
+    border-color: #c48117;
+    color: #111;
+    margin-top: 8px;
+}
+
+.btn-buy:hover {
+    background: #fa8900;
+}
+
+/* ==========================================================================
+   6. NAVBAR COMPONENTS (SEARCH & CART PREVIEW)
+   ========================================================================== */
+nav form {
+    display: flex;
+    height: 40px;
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+nav input[type="text"] {
+    flex-grow: 1;
+    font-size: 16px;
+    padding-left: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+}
+
+nav button[type="submit"] {
+    background-color: #febd69;
+    border: none;
+    padding: 0 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+nav button[type="submit"]:hover {
+    background-color: #f3a847;
+}
+
+.cart-container {
+    position: relative;
+    display: inline-block;
+}
+
+#cart-preview {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 250px;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 15px;
+    z-index: 1000;
+    color: #111;
+    border-radius: 4px;
+}
+
+.cart-container:hover #cart-preview {
+    display: block;
+}
+
+/* ==========================================================================
+   7. MESSAGES & ALERTS
+   ========================================================================== */
+.messages-container {
+    max-width: 1500px;
+    margin: 10px auto;
+    padding: 0 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error, .alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* ==========================================================================
+   8. CART & CHECKOUT PAGES
+   ========================================================================== */
+.cart-page-container, .checkout-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 30px auto;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.cart-main, .checkout-form-section {
+    flex: 3;
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.cart-subtotal-box, .order-summary-box {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    height: fit-content;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.cart-item {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+    align-items: flex-start;
+}
+
+.cart-item-image img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-right: 20px;
+}
+
+/* ==========================================================================
+   9. UTILITY COMPONENTS (BACK TO TOP, ETC)
+   ========================================================================== */
+#backToTop {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    background-color: #37475a;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+}
+
+/* ==========================================================================
+   10. RESPONSIVE DESIGN (Only for screens smaller than 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .main-container, .cart-page-container, .checkout-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        position: relative; /* On mobile, we usually don't want it sticky */
+        top: 0;
+        height: auto;
+        max-height: none;
+    }
+}
+/* ==========================================================================
+   11. Pagination Styling
+   =============================================================== */
+.btn-pagination {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #0f1111;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 0 4px;
+    transition: background-color 0.2s;
+}
+
+.btn-pagination:hover {
+    background-color: #f7f8f8;
+}
+
+.current-page {
+    margin: 0 15px;
+    font-size: 14px;
+    color: #565959;
+}
+
+/* Ensure the main area takes up the remaining space next to the sidebar */
+.results-main {
+    flex-grow: 1;
+    padding-left: 20px;
+    width: 100%; /* Add this to push the grid to fill the space */
+}
+
+/* Ensure the grid is actually a grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjusted min-width */
+    gap: 20px;
+    width: 100%;
+}
+
+/* Login */
+/* Amazon-style Auth Box */
+/* Style the labels and inputs inside the auth form */
+.auth-container p label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.auth-container p input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #a6a6a6;
+    border-radius: 3px;
+    outline: none;
+}
+
+.auth-container p input:focus {
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, .5);
+}
+
+/* Hide or shrink the messy help text in registration */
+.registration-form .helptext {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+/* Ensure the list of requirements doesn't have huge margins */
+.registration-form ul {
+    padding-left: 20px;
+    margin: 5px 0 15px 0;
+    font-size: 11px;
+    color: #666;
+}
+
+.results-main {
+    flex-grow: 1; /* This pushes the main content to fill the screen */
+    padding: 0 20px;
+}
+
+.product-grid {
+    display: grid;
+    /* This makes columns fit perfectly regardless of screen size */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.results-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.sort-container select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f2f2;
+}
+
+.pagination {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.pagination a {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #007185;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* The anchor for the hover box */
+.cart-wrapper {
+    position: relative;
+    padding: 5px 0;
+}
+
+/* The box itself */
+.cart-hover-box {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 240px;
+    background: white;
+    padding: 15px;
+    border: 1px solid #ddd;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+/* Show box on hover */
+.cart-wrapper:hover .cart-hover-box {
+    display: block;
+}
+
+/* Amazon Yellow Button Style */
+.btn-yellow {
+    background-color: #ffd814;
+    border: 1px solid #fcd200;
+}
+.btn-yellow:hover {
+    background-color: #f7ca00;
+}
+
+/* Back to Top Button */
+#backToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: none; /* Controlled by JS */
+    background: #37475a;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.checkout-form p {
+    margin-bottom: 15px;
+}
+
+.checkout-form label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #888;
+    border-radius: 3px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.checkout-form input:focus {
+    outline: none;
+    border-color: #e77600;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.5);
+}

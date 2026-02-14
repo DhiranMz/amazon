@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* CSS stays here */
+        body { font-family: sans-serif; color: #333; }
+        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .details { margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #eee; text-align: left; padding: 10px; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; vertical-align: middle; }
+        .total { text-align: right; font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .product-img { width: 50px; height: 50px; object-fit: contain; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ORDER RECEIPT</h1>
+        <p>My Amazon Store</p>
+    </div>
+
+    <div class="details">
+        <p><strong>Order ID:</strong> #{{ order.id }}</p>
+        <p><strong>Date:</strong> {{ order.date_ordered|date:"F d, Y" }}</p>
+        <p><strong>Customer:</strong> {{ order.user.username }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th> <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+            <tr>
+                <td>
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.path }}" class="product-img">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.product.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Order Total: ${{ order.get_cart_total }}
+    </div>
+</body>
+</html>

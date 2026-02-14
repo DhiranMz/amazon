@@ -1,0 +1,46 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container" style="width: 95%; max-width: 750px; margin: 60px auto; background: white; padding: 40px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+
+    <div style="text-align: center;">
+        <div style="color: #007600; font-size: 60px; margin-bottom: 10px;">✔</div>
+        <h1 style="color: #0f1111; margin-bottom: 5px;">Order placed, thank you!</h1>
+        <p style="color: #565959; font-size: 14px;">We've received your order and are processing it now.</p>
+    </div>
+
+    <div style="margin: 30px 0; padding: 20px; border: 1px solid #eee; background: #f9f9f9; border-radius: 4px;">
+        <h3 style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">Order Details</h3>
+        <p style="margin: 10px 0; font-size: 14px;"><strong>Order Number:</strong> #{{ order.id }}</p>
+
+        <div style="margin-top: 15px;">
+            {% for item in order.items.all %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" style="width: 40px; height: 40px; object-fit: contain; background: white; border: 1px solid #eee;">
+                    {% endif %}
+                    <span>{{ item.product.name }} <span style="color: #565959;">(x{{ item.quantity }})</span></span>
+                </div>
+                <span style="font-weight: bold;">${{ item.product.price }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+
+        <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #B12704;">
+            <span>Order Total:</span>
+            <span>${{ order.get_cart_total }}</span>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+        <a href="{% url 'order_history' %}" class="btn-amazon" style="flex: 1; min-width: 150px; padding: 12px; border: 1px solid #adb1b8; background: #f0f2f2; color: black; text-decoration: none; border-radius: 8px; font-size: 13px; text-align: center; font-weight: 500;">View your orders</a>
+
+        <a href="{% url 'download_pdf_receipt' order.id %}" class="btn-amazon" style="flex: 1; min-width: 150px; padding: 12px; border: 1px solid #007185; background: white; color: #007185; text-decoration: none; border-radius: 8px; font-size: 13px; text-align: center; font-weight: 500;">Download PDF</a>
+
+        <a href="{% url 'home' %}" class="btn-amazon btn-yellow" style="flex: 1; min-width: 150px; padding: 12px; text-decoration: none; border-radius: 8px; font-size: 13px; background: #FFD814; color: black; text-align: center; font-weight: 500; border: 1px solid #FCD200;">Continue shopping</a>
+    </div>
+</div>
+{% endblock %}

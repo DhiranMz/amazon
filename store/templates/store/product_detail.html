@@ -1,0 +1,64 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row bg-white p-4 rounded shadow-sm">
+
+        <div class="col-md-5">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 450px; width: 100%; object-fit: contain;">
+            {% else %}
+                <div class="text-center p-5 bg-light">No Image Available</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-7">
+            <h1 class="fw-bold">{{ product.name }}</h1>
+
+            <div class="stars mb-2">
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= product.rating %}
+                        <span style="color: #febd69; font-size: 1.4rem;">★</span>
+                    {% else %}
+                        <span style="color: #ccc; font-size: 1.4rem;">★</span>
+                    {% endif %}
+                {% endfor %}
+                <span class="text-info ms-2">{{ product.rating }} out of 5 stars</span>
+            </div>
+
+            <hr>
+            <h3 class="text-danger">${{ product.price }}</h3>
+            <p class="mt-3">{{ product.description }}</p>
+
+            <div class="mt-4 p-3 border rounded" style="max-width: 300px; background-color: #f9f9f9;">
+                {% if product.stock > 0 %}
+                    <h5 style="color: #007600;">In Stock</h5>
+                    <p class="text-muted small">Only {{ product.stock }} left in stock - order soon.</p>
+
+                    <form action="{% url 'add_to_cart' product.pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="quantity">Quantity:</label>
+                            <select name="quantity" id="quantity" class="form-select d-inline-block w-auto ms-2">
+                                {% for i in "123456789"|make_list %}
+                                    {% if forloop.counter <= product.stock %}
+                                        <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 rounded-pill mb-2">Add to Cart</button>
+                    </form>
+
+                    <a href="{% url 'buy_now' product.pk %}" class="btn btn-orange w-100 rounded-pill text-dark" style="background-color: #ffa41c; border-color: #ff8f00;">Buy Now</a>
+
+                {% else %}
+                    <h5 style="color: #B12704;">Currently Unavailable</h5>
+                    <p class="text-muted small">We don't know when or if this item will be back in stock.</p>
+                    <button class="btn btn-secondary w-100 rounded-pill" disabled>Check back later</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

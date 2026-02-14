@@ -1,0 +1,112 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-container">
+
+    <aside class="sidebar">
+        <h3>Department</h3>
+        <ul>
+            <li><a href="{% url 'home' %}" class="dept-link-all">All Departments</a></li>
+            {% for cat in categories %}
+                <li>
+                    <a href="{% url 'home' %}?category={{ cat.id }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="dept-link">
+                        {{ cat.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <main class="results-main">
+
+        <div class="results-toolbar">
+            {% if request.GET.search %}
+                <div class="results-header">
+                    <h3>Results for "{{ request.GET.search }}"</h3>
+                    <a href="{% url 'home' %}" class="clear-link">Clear Search</a>
+                </div>
+            {% else %}
+                <h2 class="results-header">All Results</h2>
+            {% endif %}
+
+            <div class="sort-container">
+                <form method="get" id="sort-form">
+                    {% if request.GET.search %}<input type="hidden" name="search" value="{{ request.GET.search }}">{% endif %}
+                    {% if request.GET.category %}<input type="hidden" name="category" value="{{ request.GET.category }}">{% endif %}
+
+                    <label for="sort">Sort by:</label>
+                    <select name="sort" id="sort" onchange="document.getElementById('sort-form').submit()">
+                        <option value="">Featured</option>
+                        <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+
+                    <a href="{% url 'product_detail' product.pk %}" class="img-container">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="no-image">No Image</div>
+                        {% endif %}
+                    </a>
+
+                    <div class="product-info">
+                        <a href="{% url 'product_detail' product.pk %}" style="text-decoration:none; color:inherit;">
+                            <h3 class="product-name">{{ product.name }}</h3>
+                        </a>
+
+                        <div class="stars">
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= product.rating %}
+                                    <span style="color: #febd69;">★</span>
+                                {% else %}
+                                    <span style="color: #ccc;">★</span>
+                                {% endif %}
+                            {% endfor %}
+                            <span class="rating-count">{{ product.rating|default:"0" }}</span>
+                        </div>
+
+                        <p class="price">${{ product.price }}</p>
+                    </div>
+
+                    <form action="{% url 'add_to_cart' product.pk %}" method="POST" class="add-form">
+                        {% csrf_token %}
+                        <select name="quantity" class="qty-select">
+                            {% for i in "12345"|make_list %}
+                                <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit" class="btn-amazon btn-yellow">Add to Cart</button>
+                        <a href="{% url 'buy_now' product.pk %}" class="btn-amazon btn-orange">Buy Now</a>
+                    </form>
+                </div>
+            {% empty %}
+                <p class="no-results">No products found. Have you added any in the Admin panel?</p>
+            {% endfor %}
+        </div>
+
+        {% if products.has_other_pages %}
+        <div class="pagination">
+            {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">&laquo; Previous</a>
+            {% endif %}
+
+            <span class="current">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+            {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </main>
+</div>
+{% endblock %}

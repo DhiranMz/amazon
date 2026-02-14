@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+<div class="auth-wrapper" style="display: flex; justify-content: center; align-items: center; padding: 40px 0;">
+    <div class="auth-container">
+        <h1>Sign-In</h1>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <button type="submit" class="btn-amazon btn-add">Sign-In</button>
+        </form>
+
+        <p style="font-size: 12px; margin-top: 20px; color: #555;">
+            By continuing, you agree to My Amazon's Conditions of Use and Privacy Notice.
+        </p>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: -20px;">
+    <p style="font-size: 12px; color: #767676;">New to My Amazon?</p>
+    <a href="{% url 'register' %}" class="btn-amazon" style="display: inline-block; width: 350px; background: #eff0f3; border-color: #adb1b8; text-decoration: none; color: black; padding: 5px 0;">
+        Create your My Amazon account
+    </a>
+</div>
+{% endblock %}
